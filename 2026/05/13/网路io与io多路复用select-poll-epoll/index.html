@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
+  <meta name="description" content="实验环境：ubuntu 24.04vscodegcc 1.socket什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作 —程序 &lt;-&gt; socket &lt;-&gt; 内核TCP&#x2F;IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络 网络通信很复杂，因此需要设计出一套API供开发者使用。 2.利用socke">
 <meta property="og:type" content="article">
 <meta property="og:title" content="网路io与io多路复用select&#x2F;poll&#x2F;epoll&#x2F;">
 <meta property="og:url" content="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="实验环境：ubuntu 24.04vscodegcc 1.socket什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作 —程序 &lt;-&gt; socket &lt;-&gt; 内核TCP&#x2F;IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络 网络通信很复杂，因此需要设计出一套API供开发者使用。 2.利用socke">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-13T13:19:52.000Z">
-<meta property="article:modified_time" content="2026-05-13T13:19:52.656Z">
+<meta property="article:modified_time" content="2026-05-13T15:43:01.734Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
@@ -185,8 +185,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2026-05-13 21:19:52" itemprop="dateCreated datePublished" datetime="2026-05-13T21:19:52+08:00">2026-05-13</time>
+              <time title="创建时间：2026-05-13 21:19:52 / 修改时间：23:43:01" itemprop="dateCreated datePublished" datetime="2026-05-13T21:19:52+08:00">2026-05-13</time>
             </span>
 
           
@@ -200,7 +201,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>实验环境：<br>ubuntu 24.04<br>vscode<br>gcc</p>
+<h1 id="1-socket"><a href="#1-socket" class="headerlink" title="1.socket"></a>1.socket</h1><p>什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作</p>
+<p>—程序 &lt;-&gt; socket &lt;-&gt; 内核TCP/IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络</p>
+<p>网络通信很复杂，因此需要设计出一套API供开发者使用。</p>
+<h1 id="2-利用socket通信的流程"><a href="#2-利用socket通信的流程" class="headerlink" title="2.利用socket通信的流程"></a>2.利用socket通信的流程</h1><h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>-服务端<br>1.创建socket<br>2.绑定端口和ip<br>3.监听<br>4.accept（等待连接，tcp在给个函数内完成三次握手）<br>注意!!!此时服务端会创建一个socket专门用于给连接的客户端通信，此前创建的socket是用于监听连接的<br>-客户端<br>1.创建socket<br>2.connect（连接服务端）</p>
+<h2 id="数据通信"><a href="#数据通信" class="headerlink" title="数据通信"></a>数据通信</h2><p>1.发送数据send（）<br>2.接收数据recv（）<br>3.关闭连接close（）此时发生四次挥手<br>注意！！！只有双方都close了才会彻底关闭tcp连接，一方close只代表不发送数据了但还是可以接收数据</p>
+
     </div>
 
     
@@ -270,6 +277,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-socket"><span class="nav-number">1.</span> <span class="nav-text">1.socket</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%88%A9%E7%94%A8socket%E9%80%9A%E4%BF%A1%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">2.利用socket通信的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.1.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1"><span class="nav-number">2.2.</span> <span class="nav-text">数据通信</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

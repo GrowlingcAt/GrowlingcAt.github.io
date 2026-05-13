@@ -10,15 +10,22 @@
   <rights>All rights reserved 2026, John Doe</rights>
   <subtitle>这个是记录我学习过程的博客</subtitle>
   <title>GrowlingcAt's Blog</title>
-  <updated>2026-05-13T13:19:52.656Z</updated>
+  <updated>2026-05-13T15:43:01.734Z</updated>
   <entry>
     <author>
       <name>John Doe</name>
     </author>
+    <content>
+      <![CDATA[<p>实验环境：<br>ubuntu 24.04<br>vscode<br>gcc</p><h1 id="1-socket"><a href="#1-socket" class="headerlink" title="1.socket"></a>1.socket</h1><p>什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作</p><p>—程序 &lt;-&gt; socket &lt;-&gt; 内核TCP/IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络</p><p>网络通信很复杂，因此需要设计出一套API供开发者使用。</p><h1 id="2-利用socket通信的流程"><a href="#2-利用socket通信的流程" class="headerlink" title="2.利用socket通信的流程"></a>2.利用socket通信的流程</h1><h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>-服务端<br>1.创建socket<br>2.绑定端口和ip<br>3.监听<br>4.accept（等待连接，tcp在给个函数内完成三次握手）<br>注意!!!此时服务端会创建一个socket专门用于给连接的客户端通信，此前创建的socket是用于监听连接的<br>-客户端<br>1.创建socket<br>2.connect（连接服务端）</p><h2 id="数据通信"><a href="#数据通信" class="headerlink" title="数据通信"></a>数据通信</h2><p>1.发送数据send（）<br>2.接收数据recv（）<br>3.关闭连接close（）此时发生四次挥手<br>注意！！！只有双方都close了才会彻底关闭tcp连接，一方close只代表不发送数据了但还是可以接收数据</p>]]>
+    </content>
     <id>http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/</id>
     <link href="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/"/>
     <published>2026-05-13T13:19:52.000Z</published>
+    <summary>
+      <![CDATA[<p>实验环境：<br>ubuntu 24.04<br>vscode<br>gcc</p>
+<h1 id="1-socket"><a href="#1-socket" class="headerlink" title="1.socket"></a>1.socket</h1><p>]]>
+    </summary>
     <title>网路io与io多路复用select/poll/epoll/</title>
-    <updated>2026-05-13T13:19:52.656Z</updated>
+    <updated>2026-05-13T15:43:01.734Z</updated>
   </entry>
 </feed>
