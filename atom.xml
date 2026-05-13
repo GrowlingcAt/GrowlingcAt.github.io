@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>John Doe</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <id>http://example.com/</id>
+  <link href="http://example.com/" rel="alternate"/>
+  <link href="http://example.com/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, John Doe</rights>
+  <subtitle>这个是记录我学习过程的博客</subtitle>
+  <title>GrowlingcAt's Blog</title>
+  <updated>2026-05-13T13:19:52.656Z</updated>
+  <entry>
+    <author>
+      <name>John Doe</name>
+    </author>
+    <id>http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/</id>
+    <link href="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/"/>
+    <published>2026-05-13T13:19:52.000Z</published>
+    <title>网路io与io多路复用select/poll/epoll/</title>
+    <updated>2026-05-13T13:19:52.656Z</updated>
+  </entry>
+</feed>
