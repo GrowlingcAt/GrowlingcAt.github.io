@@ -22,17 +22,17 @@
 
   <meta name="description" content="实验环境：ubuntu 24.04vscodegcc 1.socket什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作 —程序 &lt;-&gt; socket &lt;-&gt; 内核TCP&#x2F;IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络 网络通信很复杂，因此需要设计出一套API供开发者使用。 2.利用socke">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网路io与io多路复用select&#x2F;poll&#x2F;epoll&#x2F;">
-<meta property="og:url" content="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/index.html">
+<meta property="og:title" content="简单socket编程和网路io">
+<meta property="og:url" content="http://example.com/2026/05/13/2-1-1/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
 <meta property="og:description" content="实验环境：ubuntu 24.04vscodegcc 1.socket什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作 —程序 &lt;-&gt; socket &lt;-&gt; 内核TCP&#x2F;IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络 网络通信很复杂，因此需要设计出一套API供开发者使用。 2.利用socke">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-13T13:19:52.000Z">
-<meta property="article:modified_time" content="2026-05-13T15:43:01.734Z">
+<meta property="article:modified_time" content="2026-05-15T04:55:01.623Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/">
+<link rel="canonical" href="http://example.com/2026/05/13/2-1-1/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>网路io与io多路复用select/poll/epoll/ | GrowlingcAt's Blog</title>
+  <title>简单socket编程和网路io | GrowlingcAt's Blog</title>
   
 
 
@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/13/%E7%BD%91%E8%B7%AFio%E4%B8%8Eio%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8select-poll-epoll/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/13/2-1-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -176,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          网路io与io多路复用select/poll/epoll/
+          简单socket编程和网路io
         </h1>
 
         <div class="post-meta">
@@ -185,10 +185,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2026-05-13 21:19:52 / 修改时间：23:43:01" itemprop="dateCreated datePublished" datetime="2026-05-13T21:19:52+08:00">2026-05-13</time>
+              <time title="创建时间：2026-05-13 21:19:52" itemprop="dateCreated datePublished" datetime="2026-05-13T21:19:52+08:00">2026-05-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-05-15 12:55:01" itemprop="dateModified" datetime="2026-05-15T12:55:01+08:00">2026-05-15</time>
+              </span>
 
           
 
@@ -205,8 +211,12 @@
 <h1 id="1-socket"><a href="#1-socket" class="headerlink" title="1.socket"></a>1.socket</h1><p>什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作</p>
 <p>—程序 &lt;-&gt; socket &lt;-&gt; 内核TCP/IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络</p>
 <p>网络通信很复杂，因此需要设计出一套API供开发者使用。</p>
-<h1 id="2-利用socket通信的流程"><a href="#2-利用socket通信的流程" class="headerlink" title="2.利用socket通信的流程"></a>2.利用socket通信的流程</h1><h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>-服务端<br>1.创建socket<br>2.绑定端口和ip<br>3.监听<br>4.accept（等待连接，tcp在给个函数内完成三次握手）<br>注意!!!此时服务端会创建一个socket专门用于给连接的客户端通信，此前创建的socket是用于监听连接的<br>-客户端<br>1.创建socket<br>2.connect（连接服务端）</p>
+<h1 id="2-利用socket通信的流程"><a href="#2-利用socket通信的流程" class="headerlink" title="2.利用socket通信的流程"></a>2.利用socket通信的流程</h1><h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>-服务端<br>1.创建socket<br>‘’’c/c++</p>
+<p>‘’’<br>2.绑定端口和ip<br>‘’’c/c++</p>
+<p>‘’’<br>3.监听<br>‘’’c/c++</p>
+<p>‘’’<br>可以通过<br>‘’’bash<br>netstat -anop | grep {你监听的端口}<br>‘’’<br>来查看端口是否被监听<br>4.accept（等待连接，tcp在给个函数内完成三次握手）<br>注意!!!此时服务端会创建一个socket专门用于给连接的客户端通信，此前创建的socket是用于监听连接的<br>-客户端<br>1.创建socket<br>2.connect（连接服务端）</p>
 <h2 id="数据通信"><a href="#数据通信" class="headerlink" title="数据通信"></a>数据通信</h2><p>1.发送数据send（）<br>2.接收数据recv（）<br>3.关闭连接close（）此时发生四次挥手<br>注意！！！只有双方都close了才会彻底关闭tcp连接，一方close只代表不发送数据了但还是可以接收数据</p>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><h1 id="只能面对单个"><a href="#只能面对单个" class="headerlink" title="只能面对单个"></a>只能面对单个</h1><h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>1.端口被绑定不能被再次绑定<br>2.执行listen之后可以被连接（数据可以被发送但是无法被处理），并且会产生新的连接状态<br>3.此时虽然连接已经被建立的但仍然需要再创建一个socket进行通信<br>4.fd才是io，与tcp连接其实不是一回事</p>
 
     </div>
 
@@ -220,6 +230,13 @@
 
 
         
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/14/2-1-2/" rel="next" title="事件驱动reactor的原理与实现">
+      事件驱动reactor的原理与实现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
     
   </article>
@@ -277,7 +294,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-socket"><span class="nav-number">1.</span> <span class="nav-text">1.socket</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%88%A9%E7%94%A8socket%E9%80%9A%E4%BF%A1%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">2.利用socket通信的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.1.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1"><span class="nav-number">2.2.</span> <span class="nav-text">数据通信</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-socket"><span class="nav-number">1.</span> <span class="nav-text">1.socket</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%88%A9%E7%94%A8socket%E9%80%9A%E4%BF%A1%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">2.利用socket通信的流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.1.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%80%9A%E4%BF%A1"><span class="nav-number">2.2.</span> <span class="nav-text">数据通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B"><span class="nav-number">2.3.</span> <span class="nav-text">改进</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AA%E8%83%BD%E9%9D%A2%E5%AF%B9%E5%8D%95%E4%B8%AA"><span class="nav-number">3.</span> <span class="nav-text">只能面对单个</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">总结：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -291,7 +308,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

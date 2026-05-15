@@ -20,30 +20,32 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="GrowlingcAt&#39;s Blog">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="上文拾遗1.对于断开连接的处理当tcp客户端断开时我们的recv返回的值为0，因此我们的输出会不断出现recv：0由此我们学要对我们的client_thread方法进行修改‘’’c&#x2F;c++    if(count&#x3D;&#x3D;0)&#x2F;&#x2F;disconnect        {            printf(“disconnected\n”);            close(clientfd);">
+<meta property="og:type" content="article">
+<meta property="og:title" content="事件驱动reactor的原理与实现">
+<meta property="og:url" content="http://example.com/2026/05/14/2-1-2/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="上文拾遗1.对于断开连接的处理当tcp客户端断开时我们的recv返回的值为0，因此我们的输出会不断出现recv：0由此我们学要对我们的client_thread方法进行修改‘’’c&#x2F;c++    if(count&#x3D;&#x3D;0)&#x2F;&#x2F;disconnect        {            printf(“disconnected\n”);            close(clientfd);">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-14T12:10:58.000Z">
+<meta property="article:modified_time" content="2026-05-15T11:13:35.565Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2026/05/14/2-1-2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>GrowlingcAt's Blog</title>
+  <title>事件驱动reactor的原理与实现 | GrowlingcAt's Blog</title>
   
 
 
@@ -154,69 +156,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/15/2-1-3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="这个是记录我学习过程的博客">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="GrowlingcAt's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/15/2-1-3/" class="post-title-link" itemprop="url">2-1-3</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2026-05-15 12:55:45 / 修改时间：18:07:04" itemprop="dateCreated datePublished" datetime="2026-05-15T12:55:45+08:00">2026-05-15</time>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="reactor，及其百万并发的实现"><a href="#reactor，及其百万并发的实现" class="headerlink" title="reactor，及其百万并发的实现"></a>reactor，及其百万并发的实现</h3><h2 id="什么是reactor"><a href="#什么是reactor" class="headerlink" title="什么是reactor"></a>什么是reactor</h2><p>由select，poll，epoll对io的管理转变为对事件的管理<br>核心是不同的io事件对应不同的回调函数<br>需要的要素：<br>event<br>callback<br>rbuffer<br>rlength<br>wbuffer<br>wlength</p>
-<p>关键在于<br>1.event与callback的匹配<br>2.每一个io与之对应的参数，每一个io是独立的</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -232,10 +175,9 @@
       <meta itemprop="name" content="GrowlingcAt's Blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/14/2-1-2/" class="post-title-link" itemprop="url">事件驱动reactor的原理与实现</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          事件驱动reactor的原理与实现
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -265,7 +207,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="上文拾遗"><a href="#上文拾遗" class="headerlink" title="上文拾遗"></a>上文拾遗</h2><p>1.对于断开连接的处理<br>当tcp客户端断开时我们的recv返回的值为0，因此我们的输出会不断出现<br>recv：0<br>由此我们学要对我们的client_thread方法进行修改<br>‘’’c/c++<br>    if(count==0)//disconnect<br>        {<br>            printf(“disconnected\n”);<br>            close(clientfd);<br>            break;<br>        }<br>‘’’</p>
+        <h2 id="上文拾遗"><a href="#上文拾遗" class="headerlink" title="上文拾遗"></a>上文拾遗</h2><p>1.对于断开连接的处理<br>当tcp客户端断开时我们的recv返回的值为0，因此我们的输出会不断出现<br>recv：0<br>由此我们学要对我们的client_thread方法进行修改<br>‘’’c/c++<br>    if(count==0)//disconnect<br>        {<br>            printf(“disconnected\n”);<br>            close(clientfd);<br>            break;<br>        }<br>‘’’</p>
 <p>2.网络io<br>io就是fd（linux下面一切皆文件）<br>fd则是一个不断递增的int<br>其中0，1，2是被系统固定为stdin，stdout，stderr<br>每一个进程的io数量是有限制的<br>当一个fd被close时会被回收此时下一次分配fd时会自动分配最小的fd（close后需要等待一段时间，回收时间可以通过系统修改）</p>
 <h2 id="io多路复用"><a href="#io多路复用" class="headerlink" title="io多路复用"></a>io多路复用</h2><p>我们的代码目前是一请求一线程<br>优点：<br>代码逻辑简单<br>缺点：<br>不利于并发（线程越多会导致内核调度的负担越重）c1k</p>
 <h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p>作用：让程序能同时监控多个文件描述符（如网络套接字），并在它们中的任何一个（或几个）准备好进行 I/O 操作时被唤醒并返回。<br>当没有io可以使用时则会阻塞在select函数</p>
@@ -303,95 +245,33 @@
 <p>server端，事件—&gt;返回不同的回调函数</p>
 <p>什么是reactor：<br>由以前的io管理，改为了事件管理</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/13/2-1-1/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="这个是记录我学习过程的博客">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="GrowlingcAt's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2026/05/13/2-1-1/" class="post-title-link" itemprop="url">简单socket编程和网路io</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2026-05-13 21:19:52" itemprop="dateCreated datePublished" datetime="2026-05-13T21:19:52+08:00">2026-05-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2026-05-15 12:55:01" itemprop="dateModified" datetime="2026-05-15T12:55:01+08:00">2026-05-15</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>实验环境：<br>ubuntu 24.04<br>vscode<br>gcc</p>
-<h1 id="1-socket"><a href="#1-socket" class="headerlink" title="1.socket"></a>1.socket</h1><p>什么是socket？socket 本质上是：“操作系统提供的网络通信接口”，程序通过socket完成网络io复杂操作</p>
-<p>—程序 &lt;-&gt; socket &lt;-&gt; 内核TCP/IP协议栈 &lt;-&gt; 网卡 &lt;-&gt; 网络</p>
-<p>网络通信很复杂，因此需要设计出一套API供开发者使用。</p>
-<h1 id="2-利用socket通信的流程"><a href="#2-利用socket通信的流程" class="headerlink" title="2.利用socket通信的流程"></a>2.利用socket通信的流程</h1><h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><p>-服务端<br>1.创建socket<br>‘’’c/c++</p>
-<p>‘’’<br>2.绑定端口和ip<br>‘’’c/c++</p>
-<p>‘’’<br>3.监听<br>‘’’c/c++</p>
-<p>‘’’<br>可以通过<br>‘’’bash<br>netstat -anop | grep {你监听的端口}<br>‘’’<br>来查看端口是否被监听<br>4.accept（等待连接，tcp在给个函数内完成三次握手）<br>注意!!!此时服务端会创建一个socket专门用于给连接的客户端通信，此前创建的socket是用于监听连接的<br>-客户端<br>1.创建socket<br>2.connect（连接服务端）</p>
-<h2 id="数据通信"><a href="#数据通信" class="headerlink" title="数据通信"></a>数据通信</h2><p>1.发送数据send（）<br>2.接收数据recv（）<br>3.关闭连接close（）此时发生四次挥手<br>注意！！！只有双方都close了才会彻底关闭tcp连接，一方close只代表不发送数据了但还是可以接收数据</p>
-<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><h1 id="只能面对单个"><a href="#只能面对单个" class="headerlink" title="只能面对单个"></a>只能面对单个</h1><h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>1.端口被绑定不能被再次绑定<br>2.执行listen之后可以被连接（数据可以被发送但是无法被处理），并且会产生新的连接状态<br>3.此时虽然连接已经被建立的但仍然需要再创建一个socket进行通信<br>4.fd才是io，与tcp连接其实不是一回事</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/13/2-1-1/" rel="prev" title="简单socket编程和网路io">
+      <i class="fa fa-chevron-left"></i> 简单socket编程和网路io
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/15/2-1-3/" rel="next" title="2-1-3">
+      2-1-3 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -444,6 +324,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E6%96%87%E6%8B%BE%E9%81%97"><span class="nav-number">1.</span> <span class="nav-text">上文拾遗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#io%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">io多路复用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#select"><span class="nav-number">3.</span> <span class="nav-text">select</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poll"><span class="nav-number">4.</span> <span class="nav-text">poll</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#epoll%EF%BC%88%E5%BE%88%E9%87%8D%E8%A6%81%EF%BC%81%EF%BC%81%EF%BC%81%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">epoll（很重要！！！）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#epoll%E7%9A%84%E8%BE%B9%E7%BC%98%E8%A7%A6%E5%8F%91%E4%B8%8E%E6%B0%B4%E5%B9%B3%E8%A7%A6%E5%8F%91"><span class="nav-number">6.</span> <span class="nav-text">epoll的边缘触发与水平触发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#epoll%E7%9B%B8%E6%AF%94%E4%BA%8Eselect%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">7.</span> <span class="nav-text">epoll相比于select的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poll%E5%AF%B9select%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">8.</span> <span class="nav-text">poll对select的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poll%EF%BC%8Cselect%E5%AF%B9epoll%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">9.</span> <span class="nav-text">poll，select对epoll的优势</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">9.1.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
