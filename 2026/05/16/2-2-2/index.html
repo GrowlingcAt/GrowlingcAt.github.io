@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://example.com/tags/index.html">
+  <meta name="description" content="UDP的可靠传输协议如何做到可靠性传输1.ack机制2.重传机制和重传策略3.序号机制（udp没有，要在应用层实现）4.重排机制5.窗口机制 流量控制 带宽有限 流量控制1.发送方和接收方的速率不一定相等2.如果缓冲区满了还接着发送数据，会造成丢包导致大量网络资源的浪费3.对发送方的速率控制被称为流量控制 如何控制？窗口机制根据丢包情况调整接收窗口—-&gt;调整发送速率 UDP如何可靠，KCP协">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-2-2">
+<meta property="og:url" content="http://example.com/2026/05/16/2-2-2/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="UDP的可靠传输协议如何做到可靠性传输1.ack机制2.重传机制和重传策略3.序号机制（udp没有，要在应用层实现）4.重排机制5.窗口机制 流量控制 带宽有限 流量控制1.发送方和接收方的速率不一定相等2.如果缓冲区满了还接着发送数据，会造成丢包导致大量网络资源的浪费3.对发送方的速率控制被称为流量控制 如何控制？窗口机制根据丢包情况调整接收窗口—-&gt;调整发送速率 UDP如何可靠，KCP协">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-13T13:02:24.000Z">
-<meta property="article:modified_time" content="2026-05-13T13:02:24.583Z">
+<meta property="og:image" content="http://example.com/2026/05/16/2-2-2/kcp_proc.png">
+<meta property="article:published_time" content="2026-05-16T11:22:09.000Z">
+<meta property="article:modified_time" content="2026-05-16T13:44:03.661Z">
 <meta property="article:author" content="GrowlingcAt">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2026/05/16/2-2-2/kcp_proc.png">
 
-<link rel="canonical" href="http://example.com/tags/">
+<link rel="canonical" href="http://example.com/2026/05/16/2-2-2/">
 
 
 <script id="page-configurations">
@@ -40,13 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>tags | GrowlingcAt's Blog
-</title>
+  <title>2-2-2 | GrowlingcAt's Blog</title>
   
 
 
@@ -156,43 +157,99 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/16/2-2-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="GrowlingcAt">
+      <meta itemprop="description" content="这个是记录我学习过程的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GrowlingcAt's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2-2-2
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">tags
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2026-05-16 19:22:09 / 修改时间：21:44:03" itemprop="dateCreated datePublished" datetime="2026-05-16T19:22:09+08:00">2026-05-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="UDP的可靠传输协议"><a href="#UDP的可靠传输协议" class="headerlink" title="UDP的可靠传输协议"></a>UDP的可靠传输协议</h3><h2 id="如何做到可靠性传输"><a href="#如何做到可靠性传输" class="headerlink" title="如何做到可靠性传输"></a>如何做到可靠性传输</h2><p>1.ack机制<br>2.重传机制和重传策略<br>3.序号机制（udp没有，要在应用层实现）<br>4.重排机制<br>5.窗口机制 流量控制 带宽有限</p>
+<p>流量控制<br>1.发送方和接收方的速率不一定相等<br>2.如果缓冲区满了还接着发送数据，会造成丢包导致大量网络资源的浪费<br>3.对发送方的速率控制被称为流量控制</p>
+<p>如何控制？<br>窗口机制<br>根据丢包情况调整接收窗口—-&gt;调整发送速率</p>
+<h3 id="UDP如何可靠，KCP协议在哪些方面有优势"><a href="#UDP如何可靠，KCP协议在哪些方面有优势" class="headerlink" title="UDP如何可靠，KCP协议在哪些方面有优势"></a>UDP如何可靠，KCP协议在哪些方面有优势</h3><p>以10%～20%的带宽浪费的代价换取了比TCP快30%～40%的传输速率。</p>
+<p>KCP能否比TCP有更高带宽？<br>网络畅通的情况下文件传输速率<br>kcp小于tcp<br>即水流急但不一定多</p>
+<p>UDP可以定制重传策略和丢包策略</p>
+<p>RTO<br>TCP超时计算是RTOx2 KCP则是RTOx1.5</p>
+<p>重传策略<br>tcp会全部重传，kcp是选择重传，只传输丢包的数据</p>
+<p>快速重传（跳过多少个包马上重传）（如果使用了快速重传可以不考虑RTO）<br>换取传输速度而不是流量</p>
+<p>ACK<br>延迟ack（会导致RTT变大-》RTO变大-〉重传间隔和延迟应答变长）<br>是非延迟应答（一个包一个ack）</p>
+<p>UNA(此前编号的包都已经收到)<br>ACK（该编号已经收到）<br>只使用UNA会导致全部重传，只使用ack则成本太高<br>KCP则是出去单独的ack包，所有的包都带有UNA信息</p>
+<p>非公平退让流控：<br>kcp的正常模式和tcp一样使用公平退让即：<br>发送窗口大小由发送缓存大小，接收端剩余缓存大小，丢包退让，以及慢启动四要素决定<br>非公平：<br>对于一些及时性要求很高的小数据可以选择通过配置跳过后两步，直接通过前两者控制发送频率</p>
+<h2 id="KCP的使用"><a href="#KCP的使用" class="headerlink" title="KCP的使用"></a>KCP的使用</h2><h1 id="kcp源码流程图"><a href="#kcp源码流程图" class="headerlink" title="kcp源码流程图"></a>kcp源码流程图</h1><img src="/2026/05/16/2-2-2/kcp_proc.png" class="">
+<h1 id="1-ikcp-create"><a href="#1-ikcp-create" class="headerlink" title="1 ikcp_create()"></a>1 ikcp_create()</h1><p>创建kcp对象<br>类似于socket，每一个连接的服务端和客户端都要有一一对应的kcp对象通过其中的conv字段确认<br>由客户端生成conv会不会出现相同的conv？<br>会，解决办法<br>1.客户端uuid算法<br>2.先用http向服务端发出请求获取conv</p>
+<h1 id="ikcp-send"><a href="#ikcp-send" class="headerlink" title="ikcp_send()"></a>ikcp_send()</h1><p>发送数据<br>由ikcp_update()调度时发送<br>默认支持报文模式，也支持流模式</p>
+<h1 id="ickp-recv"><a href="#ickp-recv" class="headerlink" title="ickp_recv()"></a>ickp_recv()</h1><p>接收数据<br>默认支持报文模式，也支持流模式</p>
+<h1 id="kcp配置模式"><a href="#kcp配置模式" class="headerlink" title="kcp配置模式"></a>kcp配置模式</h1><p>工作模式：越极速越浪费带宽<br>最大窗口<br>最大传输单元<br>最小RTO</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/16/2-2-1/" rel="prev" title="2-2-1">
+      <i class="fa fa-chevron-left"></i> 2-2-1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/17/2-3-1/" rel="next" title="2-3-1">
+      2-3-1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -243,6 +300,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP%E7%9A%84%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">UDP的可靠传输协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BC%A0%E8%BE%93"><span class="nav-number">2.</span> <span class="nav-text">如何做到可靠性传输</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP%E5%A6%82%E4%BD%95%E5%8F%AF%E9%9D%A0%EF%BC%8CKCP%E5%8D%8F%E8%AE%AE%E5%9C%A8%E5%93%AA%E4%BA%9B%E6%96%B9%E9%9D%A2%E6%9C%89%E4%BC%98%E5%8A%BF"><span class="nav-number">2.1.</span> <span class="nav-text">UDP如何可靠，KCP协议在哪些方面有优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KCP%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">KCP的使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kcp%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">4.</span> <span class="nav-text">kcp源码流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-ikcp-create"><span class="nav-number">5.</span> <span class="nav-text">1 ikcp_create()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ikcp-send"><span class="nav-number">6.</span> <span class="nav-text">ikcp_send()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ickp-recv"><span class="nav-number">7.</span> <span class="nav-text">ickp_recv()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kcp%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%BC%8F"><span class="nav-number">8.</span> <span class="nav-text">kcp配置模式</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

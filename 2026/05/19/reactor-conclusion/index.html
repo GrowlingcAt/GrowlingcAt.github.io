@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 8.1.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="what什么是reactor？Reactor 模式简介 Reactor 模式是一种 事件驱动架构模式，用于高并发 I&#x2F;O 处理。核心思想：事件检测与事件处理分离。 系统由两部分组成：Reactor（事件分发器）：等待事件发生，分发给合适的处理器。Handlers（事件处理器 &#x2F; 回调）：实际处理事件逻辑（如 accept、recv、send）。 工作原理注册事件：将监听 socket 或客户端 s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="reactor_conclusion">
+<meta property="og:url" content="http://example.com/2026/05/19/reactor-conclusion/index.html">
+<meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
+<meta property="og:description" content="what什么是reactor？Reactor 模式简介 Reactor 模式是一种 事件驱动架构模式，用于高并发 I&#x2F;O 处理。核心思想：事件检测与事件处理分离。 系统由两部分组成：Reactor（事件分发器）：等待事件发生，分发给合适的处理器。Handlers（事件处理器 &#x2F; 回调）：实际处理事件逻辑（如 accept、recv、send）。 工作原理注册事件：将监听 socket 或客户端 s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-18T16:41:52.000Z">
+<meta property="article:modified_time" content="2026-05-19T13:29:30.913Z">
+<meta property="article:author" content="GrowlingcAt">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2026/05/19/reactor-conclusion/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>reactor_conclusion | GrowlingcAt's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="GrowlingcAt's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">GrowlingcAt's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/19/reactor-conclusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="GrowlingcAt">
+      <meta itemprop="description" content="这个是记录我学习过程的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GrowlingcAt's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          reactor_conclusion
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-05-19 00:41:52 / 修改时间：21:29:30" itemprop="dateCreated datePublished" datetime="2026-05-19T00:41:52+08:00">2026-05-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="what"><a href="#what" class="headerlink" title="what"></a>what</h3><h3 id="什么是reactor？"><a href="#什么是reactor？" class="headerlink" title="什么是reactor？"></a>什么是reactor？</h3><p>Reactor 模式简介</p>
+<p>Reactor 模式是一种 事件驱动架构模式，用于高并发 I/O 处理。<br>核心思想：事件检测与事件处理分离。</p>
+<p>系统由两部分组成：<br>Reactor（事件分发器）：等待事件发生，分发给合适的处理器。<br>Handlers（事件处理器 / 回调）：实际处理事件逻辑（如 accept、recv、send）。</p>
+<p>工作原理<br>注册事件：<br>将监听 socket 或客户端 socket 的可读/可写事件注册到 Reactor（你的代码用 epoll）。<br>等待事件：<br>Reactor 阻塞等待事件发生（epoll_wait）。<br>事件分发：<br>当事件发生时，Reactor 调用相应的回调函数：<br>处理事件：<br>回调函数完成实际 I/O 操作和状态管理。<br>根据需要修改事件类型（可读/可写），保持非阻塞连续处理。<br>特点<br>高并发：单线程也能处理大量连接。<br>非阻塞：只在事件发生时才处理，CPU 不会浪费在空等待上。<br>可扩展：每个连接维护独立状态和回调，便于管理。<br>核心：<br>事件循环 (epoll_wait)<br>事件注册/切换 (set_event)<br>回调函数 (accept_cb, recv_cb, send_cb)</p>
+<p>在你的服务器中如何体现<br>epoll → Reactor（事件分发器）<br>conn_list 回调指针 → Handler（事件处理器）<br>event_register + set_event → 注册事件和切换事件类型</p>
+<p>main() → 永久事件循环，检测事件并调用回调<br>状态机（status） → 控制响应流程，实现异步非阻塞</p>
+<h3 id="what-1"><a href="#what-1" class="headerlink" title="what"></a>what</h3><h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><h2 id="1-struct-conn保存每个连接的信息"><a href="#1-struct-conn保存每个连接的信息" class="headerlink" title="1.struct conn保存每个连接的信息"></a>1.struct conn保存每个连接的信息</h2><p>int fd<br>write 和 read buffer<br>wlength和rlength<br>status（标记有没有io响应完成）<br>回调函数指针（accept和recv是或的关系所以使用union把这两个装在一起）</p>
+<h1 id="2-set-evnt-int-fd-int-event-int-flag"><a href="#2-set-evnt-int-fd-int-event-int-flag" class="headerlink" title="2.set_evnt(int fd, int event, int flag)"></a>2.set_evnt(int fd, int event, int flag)</h1><p>主要用于注册或修改epoll事件<br>检查非法的fd，错误返回-1<br>设置epoll_event结构体的fd和事件<br>根据flag判断fd是否存在，然后决定epoll_ctl是add还是modify<br>然后将事件加入或是修改事件</p>
+<h2 id="3-回调函数"><a href="#3-回调函数" class="headerlink" title="3.回调函数"></a>3.回调函数</h2><h1 id="accept-cb-int-fd"><a href="#accept-cb-int-fd" class="headerlink" title="accept_cb(int fd)"></a>accept_cb(int fd)</h1><p>创建 clientaddr存储ip和端口<br>创建 len即clientaddr 的大小，accept要用到的参数<br>accept从监听socket接受一个新的客户端处理<br>错误处理，如果创建的fd小于0则返回-1<br>打印成功接受的信息<br>注册事件为epollin<br>返回0</p>
+<h1 id="recv-cb-int-fd"><a href="#recv-cb-int-fd" class="headerlink" title="recv_cb(int fd)"></a>recv_cb(int fd)</h1><p>检查异常fd ，返回-1<br>recv接收到 fd对应的conn结构体的r buffer中<br>对recv返回值检查为0说明断开连接，关闭连接，通过epoll_ctl删除epoll中对应的fd<br>为-1说明出错，关闭连接，通过epoll_ctl删除epoll中对应的fd<br>调用http_request传入对应的数据<br>切换事件为epollout<br>返回接收到的数据长度</p>
+<h1 id="send-cb-int-fd"><a href="#send-cb-int-fd" class="headerlink" title="send_cb(int fd)"></a>send_cb(int fd)</h1><p>检查fd是否非法，非法返回-1<br>调用http_response()传入fd的struct conn<br>根据conn的status分别处理响应（为了处理buffer不够发的情况）<br>当然后根据status的值决定后续处理<br>status==1 发送储存在coon-》的wbuffer的http请求头<br>将事件注册为写，方便发送剩余的内容<br>status==2 将事件仍然设置为epollout让回调函数下一次被调用时才被改为epollin<br>status==0 将事件事件改为epollin</p>
+<p>返回0</p>
+<h1 id="init-server"><a href="#init-server" class="headerlink" title="init_server()"></a>init_server()</h1><p>用socket()建一个tcpsocket<br>初始化sock_addrin结构体设置协议，ip和端口<br>bind()绑定参数<br>检查绑定是否成功，错误则关闭fd，返回-1<br>listen()监听端口<br>返回监听的fd</p>
+<h1 id="event-register-int-fd-int-event"><a href="#event-register-int-fd-int-event" class="headerlink" title="event_register(int fd, int event)"></a>event_register(int fd, int event)</h1><p>初始化连接对应的conn结构体并且将事件注册到epoll当中<br>检测fd是否合法，不合法返回-1<br>初始化fd对应的conn<br>conn的fd=fd<br>buffer置0<br>status=0<br>调用set_event将event注册到epoll中<br>注意：listenfd的初始化和注册单独放在了main函数内容大致相同绑定的回调函数为accept_cb</p>
+<h1 id="main"><a href="#main" class="headerlink" title="main()"></a>main()</h1><p>创建conn数组<br>创建epoll(1)创建epoll实例<br>for循环使用<br>init_server创建监听的fd<br>然后初始化对应的fd的conn<br>将accept_cb绑定到conn上<br>set_event将event设为为epollin并注册到epoll中</p>
+<p>创建events数组<br>while(1)<br>用epoll_wait()函数接收对应的event并且保存到event数组<br>遍历event数组<br>如果状态是是epollin调用r_action的回调函数<br>如果是epoll_out调用sendcb</p>
+<h3 id="when"><a href="#when" class="headerlink" title="when"></a>when</h3><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><h3 id="why"><a href="#why" class="headerlink" title="why"></a>why</h3><h3 id="为什么要使用reactor"><a href="#为什么要使用reactor" class="headerlink" title="为什么要使用reactor"></a>为什么要使用reactor</h3><ol>
+<li>高并发处理<br>传统阻塞 I/O 每个连接需要一个线程，连接数量多时会消耗大量系统资源。<br>Reactor 模式通过 单线程事件循环 + 回调，就能处理成千上万的客户端连接。<br>你的服务器就是用 epoll + 回调实现了高并发客户端管理。</li>
+<li>非阻塞异步<br>Reactor 模式保证服务器不会在 recv() 或 send() 阻塞。<br>事件发生时才处理对应回调，CPU 不会空转等待。<br>提高系统吞吐量，降低延迟。</li>
+<li>可维护性和解耦<br>事件检测（Reactor）和事件处理（回调）分开。<br>每种操作（accept/recv/send）都有独立回调。<br>你的 conn_list + 回调机制就是典型的解耦设计，方便扩展功能（比如增加日志、认证、HTTPS）。</li>
+<li>节约线程和资源<br>不需要为每个客户端创建线程。<br>减少线程上下文切换，节约内存和 CPU。<br>Reactor + epoll 是 Linux 高并发网络编程的经典组合。</li>
+</ol>
+<h3 id="how"><a href="#how" class="headerlink" title="how"></a>how</h3><h3 id="怎么使用"><a href="#怎么使用" class="headerlink" title="怎么使用"></a>怎么使用</h3><h2 id="场景：异步文件-网络-I-O-服务"><a href="#场景：异步文件-网络-I-O-服务" class="headerlink" title="场景：异步文件/网络 I/O 服务"></a>场景：异步文件/网络 I/O 服务</h2><p>假设你要实现一个 服务器，既要处理客户端请求，也要读取磁盘文件（比如返回大文件或日志），希望 I/O 都非阻塞。</p>
+<p>1️⃣ 初始化监听 socket<br>···c/c++<br>TCP 监听 socket，端口 3000：<br>int listen_fd = socket(AF_INET, SOCK_STREAM, 0);<br>bind(listen_fd, …);<br>listen(listen_fd, SOMAXCONN);<br>set_event(listen_fd, EPOLLIN, 1); // 注册可读事件<br>注册到 Reactor（epoll），等待客户端连接。<br>2️⃣ 回调函数设计<br>accept_cb<br>接收新客户端<br>初始化连接上下文<br>注册客户端 socket 可读事件，绑定 recv_cb<br>recv_cb<br>接收请求，例如客户端要求下载某个文件<br>不直接阻塞读取文件，而是：<br>打开文件描述符<br>将文件 fd 注册到 epoll 可读事件（或使用 O_NONBLOCK）<br>将文件内容读取逻辑交给 send_cb 处理<br>send_cb<br>发送缓冲区数据给客户端<br>如果文件还没读完：<br>异步读取下一块数据到缓冲区<br>继续注册 EPOLLOUT<br>文件读取完成 → 关闭文件 fd → 切回可读事件<br>3️⃣ 异步文件 I/O 技巧<br>Linux 提供 非阻塞文件 I/O：<br>int fd = open(“largefile.dat”, O_RDONLY | O_NONBLOCK);<br>使用 sendfile() 或 read() + send() 结合状态机发送数据<br>通过 Reactor 控制文件读取和网络发送：<br>status = 0 → 准备头部<br>status = 1 → 读取文件块<br>status = 2 → 发送完成<br>4️⃣ 事件循环<br>struct epoll_event events[1024];<br>while(1) {<br>    int nready = epoll_wait(epfd, events, 1024, -1);<br>    for(int i=0; i&lt;nready; i++) {<br>        int fd = events[i].data.fd;<br>        if(events[i].events &amp; EPOLLIN)<br>            conn_list[fd].r_action.recv_callback(fd);<br>        if(events[i].events &amp; EPOLLOUT)<br>            conn_list[fd].send_callback(fd);<br>    }<br>}</p>
+<h2 id="场景：即时消息推送系统"><a href="#场景：即时消息推送系统" class="headerlink" title="场景：即时消息推送系统"></a>场景：即时消息推送系统</h2><p>假设你要实现一个 多人聊天室服务器，需要同时管理上千个长连接客户端，并实时转发消息。</p>
+<p>1️⃣ 初始化服务器<br>创建监听 TCP socket，并绑定端口（如 5000）。<br>注册到 epoll 监听 可读事件（EPOLLIN）。<br>初次连接由 accept_cb 接受。<br>int listen_fd = socket(AF_INET, SOCK_STREAM, 0);<br>bind(listen_fd, …); // 绑定 IP/端口<br>listen(listen_fd, SOMAXCONN);<br>set_event(listen_fd, EPOLLIN, 1); // 监听可读事件<br>2️⃣ 客户端上下文<br>每个客户端连接维护独立上下文：<br>struct client_conn {<br>    int fd;<br>    char rbuffer[1024];<br>    char wbuffer[1024];<br>    int rlength, wlength;<br>    int status;<br>    RCALLBACK send_callback;<br>    union { RCALLBACK recv_callback; RCALLBACK accept_callback; } r_action;<br>} client_list[MAX_CLIENTS];<br>status 用于区分：<br>0 → 等待消息<br>1 → 待发送消息<br>2 → 已发送完成<br>3️⃣ 回调函数设计<br>accept_cb<br>接收新客户端连接<br>初始化客户端上下文<br>注册客户端 socket 可读事件，绑定 recv_cb<br>recv_cb<br>接收客户端发送的消息<br>将消息广播到其他客户端<br>更新其他客户端的 wbuffer 和状态为可写（EPOLLOUT）<br>修改事件类型为可写<br>send_cb<br>发送缓冲区消息到客户端<br>发送完成后切换回可读事件（EPOLLIN）<br>4️⃣ 事件循环<br>Reactor 主循环：<br>struct epoll_event events[1024];<br>while(1) {<br>    int nready = epoll_wait(epfd, events, 1024, -1);<br>    for(int i=0; i<nready; i++) {
+        int fd = events[i].data.fd;
+        if(events[i].events & EPOLLIN)
+            client_list[fd].r_action.recv_callback(fd);
+        if(events[i].events & EPOLLOUT)
+            client_list[fd].send_callback(fd);
+    }
+}
+核心思想：只处理有事件发生的 fd，CPU 不阻塞。
+5️⃣ 消息广播逻辑
+void broadcast_message(int sender_fd, char* msg, int len) {
+    for(int i=0; i<MAX_CLIENTS; i++) {
+        if(client_list[i].fd > 0 &amp;&amp; i != sender_fd) {<br>            memcpy(client_list[i].wbuffer, msg, len);<br>            client_list[i].wlength = len;<br>            client_list[i].status = 1; // 待发送<br>            set_event(client_list[i].fd, EPOLLOUT, 0);<br>        }<br>    }<br>}<br>当某个客户端发送消息时，Reactor 模式保证 异步广播，不会阻塞其他客户端。</p>
+<h2 id="场景：多端口-TCP-服务"><a href="#场景：多端口-TCP-服务" class="headerlink" title="场景：多端口 TCP 服务"></a>场景：多端口 TCP 服务</h2><p>假设你要实现一个服务器，监听 多个端口，不同端口对应不同服务逻辑（例如 2000 端口处理 HTTP 请求，2001 端口处理 WebSocket，2002 端口处理自定义 TCP 协议）。</p>
+<p>1️⃣ 初始化多个监听 socket<br>unsigned short ports[] = {2000, 2001, 2002};<br>int num_ports = sizeof(ports)/sizeof(ports[0]);</p>
+<p>for(int i=0; i&lt;num_ports; i++) {<br>    int sockfd = socket(AF_INET, SOCK_STREAM, 0);</p>
+<pre><code>struct sockaddr_in addr;
+addr.sin_family = AF_INET;
+addr.sin_addr.s_addr = htonl(INADDR_ANY);
+addr.sin_port = htons(ports[i]);
+
+bind(sockfd, (struct sockaddr*)&amp;addr, sizeof(addr));
+listen(sockfd, SOMAXCONN);
+
+conn_list[sockfd].fd = sockfd;
+conn_list[sockfd].r_action.accept_callback = accept_cb;
+set_event(sockfd, EPOLLIN, 1); // 注册可读事件
+</code></pre><p>}</p>
+<p>每个端口都会注册到 epoll，并且监听可读事件，由 accept_cb 处理新连接。</p>
+<p>2️⃣ 回调函数设计<br>accept_cb<br>接受来自任意端口的新连接。<br>根据端口选择不同业务逻辑：<br>int accept_cb(int fd) {<br>    int clientfd = accept(fd, …);</p>
+<pre><code>// 根据监听端口选择回调
+if (fd == http_port_fd) {
+    conn_list[clientfd].r_action.recv_callback = http_recv_cb;
+} else if (fd == ws_port_fd) {
+    conn_list[clientfd].r_action.recv_callback = ws_recv_cb;
+} else {
+    conn_list[clientfd].r_action.recv_callback = custom_recv_cb;
+}
+
+set_event(clientfd, EPOLLIN, 1);
+</code></pre><p>}<br>recv_cb / send_cb<br>每个端口的客户端可以有独立处理逻辑。<br>发送和接收都通过状态机控制。<br>3️⃣ 事件循环<br>Reactor 主循环保持不变：<br>struct epoll_event events[1024];<br>while(1) {<br>    int nready = epoll_wait(epfd, events, 1024, -1);<br>    for(int i=0; i&lt;nready; i++) {<br>        int fd = events[i].data.fd;<br>        if(events[i].events &amp; EPOLLIN)<br>            conn_list[fd].r_action.recv_callback(fd);<br>        if(events[i].events &amp; EPOLLOUT)<br>            conn_list[fd].send_callback(fd);<br>    }<br>}<br>事件循环统一管理所有端口和客户端。<br>不管端口多少，都由 epoll + 回调异步处理。<br>4️⃣ 优势<br>多端口统一管理 → 一个事件循环管理所有端口。<br>回调分发灵活 → 每个端口可绑定不同业务逻辑。<br>非阻塞高并发 → 支持同时处理大量客户端连接。<br>可扩展性 → 新增端口或协议只需增加初始化和回调，不改事件循环。</p>
+<h2 id="场景：物联网-传感器数据采集系统"><a href="#场景：物联网-传感器数据采集系统" class="headerlink" title="场景：物联网 / 传感器数据采集系统"></a>场景：物联网 / 传感器数据采集系统</h2><p>假设你有 上百上千个传感器设备同时上报数据，服务器需要实时处理和存储。</p>
+<p>1️⃣ 初始化监听端口<br>TCP 或 UDP 监听端口，例如 4000：<br>int listen_fd = socket(AF_INET, SOCK_STREAM, 0);<br>bind(listen_fd, …); // 绑定 IP/端口<br>listen(listen_fd, SOMAXCONN);<br>set_event(listen_fd, EPOLLIN, 1); // 注册可读事件<br>注册到 Reactor（epoll），等待传感器设备连接。<br>2️⃣ 客户端上下文设计<br>每个传感器连接维护独立上下文：<br>struct sensor_conn {<br>    int fd;<br>    char rbuffer[1024];<br>    char wbuffer[1024];<br>    int rlength, wlength;<br>    int status; // 0:等待数据, 1:待发送回复, 2:发送完成<br>    RCALLBACK send_callback;<br>    union { RCALLBACK recv_callback; RCALLBACK accept_callback; } r_action;<br>} sensor_list[MAX_SENSORS];<br>3️⃣ 回调函数设计<br>accept_cb<br>接收新传感器设备连接<br>初始化上下文<br>注册客户端可读事件，绑定 recv_cb<br>recv_cb<br>从传感器读取数据到缓冲区<br>将数据写入数据库或消息队列（异步操作）<br>如果需要回复设备状态，将数据放入 wbuffer 并设置 status=1<br>注册可写事件（EPOLLOUT）<br>send_cb<br>发送缓冲区数据到传感器<br>发送完成后切换回可读事件（EPOLLIN）<br>4️⃣ Reactor 事件循环<br>struct epoll_event events[1024];<br>while(1) {<br>    int nready = epoll_wait(epfd, events, 1024, -1);<br>    for(int i=0; i&lt;nready; i++) {<br>        int fd = events[i].data.fd;<br>        if(events[i].events &amp; EPOLLIN)<br>            sensor_list[fd].r_action.recv_callback(fd);<br>        if(events[i].events &amp; EPOLLOUT)<br>            sensor_list[fd].send_callback(fd);<br>    }<br>}<br>Reactor 统一处理所有设备事件<br>异步非阻塞保证高并发设备同时上传数据<br>5️⃣ 数据处理和状态机<br>status=0 → 等待数据<br>status=1 → 待发送回复<br>status=2 → 回复完成<br>回调和状态机结合，实现 异步接收和发送，不阻塞其他设备。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/17/2-3-1/" rel="prev" title="2-3-1">
+      <i class="fa fa-chevron-left"></i> 2-3-1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/19/coroutine-conclusion/" rel="next" title="coroutine_conclusion">
+      coroutine_conclusion <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#what"><span class="nav-number">1.</span> <span class="nav-text">what</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFreactor%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是reactor？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-1"><span class="nav-number">3.</span> <span class="nav-text">what</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">如何实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-struct-conn%E4%BF%9D%E5%AD%98%E6%AF%8F%E4%B8%AA%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">5.</span> <span class="nav-text">1.struct conn保存每个连接的信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-set-evnt-int-fd-int-event-int-flag"><span class="nav-number">6.</span> <span class="nav-text">2.set_evnt(int fd, int event, int flag)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">6.1.</span> <span class="nav-text">3.回调函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#accept-cb-int-fd"><span class="nav-number">7.</span> <span class="nav-text">accept_cb(int fd)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#recv-cb-int-fd"><span class="nav-number">8.</span> <span class="nav-text">recv_cb(int fd)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#send-cb-int-fd"><span class="nav-number">9.</span> <span class="nav-text">send_cb(int fd)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#init-server"><span class="nav-number">10.</span> <span class="nav-text">init_server()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#event-register-int-fd-int-event"><span class="nav-number">11.</span> <span class="nav-text">event_register(int fd, int event)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main"><span class="nav-number">12.</span> <span class="nav-text">main()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#when"><span class="nav-number">12.1.</span> <span class="nav-text">when</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">12.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#why"><span class="nav-number">12.3.</span> <span class="nav-text">why</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8reactor"><span class="nav-number">12.4.</span> <span class="nav-text">为什么要使用reactor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#how"><span class="nav-number">12.5.</span> <span class="nav-text">how</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8"><span class="nav-number">12.6.</span> <span class="nav-text">怎么使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%EF%BC%9A%E5%BC%82%E6%AD%A5%E6%96%87%E4%BB%B6-%E7%BD%91%E7%BB%9C-I-O-%E6%9C%8D%E5%8A%A1"><span class="nav-number">12.7.</span> <span class="nav-text">场景：异步文件&#x2F;网络 I&#x2F;O 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%EF%BC%9A%E5%8D%B3%E6%97%B6%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E7%B3%BB%E7%BB%9F"><span class="nav-number">12.8.</span> <span class="nav-text">场景：即时消息推送系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%EF%BC%9A%E5%A4%9A%E7%AB%AF%E5%8F%A3-TCP-%E6%9C%8D%E5%8A%A1"><span class="nav-number">12.9.</span> <span class="nav-text">场景：多端口 TCP 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%EF%BC%9A%E7%89%A9%E8%81%94%E7%BD%91-%E4%BC%A0%E6%84%9F%E5%99%A8%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E7%B3%BB%E7%BB%9F"><span class="nav-number">12.10.</span> <span class="nav-text">场景：物联网 &#x2F; 传感器数据采集系统</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">GrowlingcAt</p>
+  <div class="site-description" itemprop="description">这个是记录我学习过程的博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GrowlingcAt</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+    </div>
+</body>
+</html>

@@ -20,19 +20,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://example.com/tags/index.html">
+  <meta name="description" content="posix api 以及 epoll原理posix api服务器          客户端socket()        socket()bind()          bind()&#x2F;&#x2F;optionallisten()        connect()&#x2F;&#x2F;udp可选accept()        recv()send()          send()recv() epoll_create()ep">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-2-1">
+<meta property="og:url" content="http://example.com/2026/05/16/2-2-1/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="posix api 以及 epoll原理posix api服务器          客户端socket()        socket()bind()          bind()&#x2F;&#x2F;optionallisten()        connect()&#x2F;&#x2F;udp可选accept()        recv()send()          send()recv() epoll_create()ep">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-13T13:02:24.000Z">
-<meta property="article:modified_time" content="2026-05-13T13:02:24.583Z">
+<meta property="og:image" content="http://example.com/2026/05/16/2-2-1/tcp.jpeg">
+<meta property="og:image" content="http://example.com/2026/05/16/2-2-1/threehands.png">
+<meta property="article:published_time" content="2026-05-16T06:52:30.000Z">
+<meta property="article:modified_time" content="2026-05-16T13:14:42.613Z">
 <meta property="article:author" content="GrowlingcAt">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2026/05/16/2-2-1/tcp.jpeg">
 
-<link rel="canonical" href="http://example.com/tags/">
+<link rel="canonical" href="http://example.com/2026/05/16/2-2-1/">
 
 
 <script id="page-configurations">
@@ -40,13 +43,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>tags | GrowlingcAt's Blog
-</title>
+  <title>2-2-1 | GrowlingcAt's Blog</title>
   
 
 
@@ -156,43 +158,102 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/16/2-2-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="GrowlingcAt">
+      <meta itemprop="description" content="这个是记录我学习过程的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GrowlingcAt's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2-2-1
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">tags
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2026-05-16 14:52:30 / 修改时间：21:14:42" itemprop="dateCreated datePublished" datetime="2026-05-16T14:52:30+08:00">2026-05-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="posix-api-以及-epoll原理"><a href="#posix-api-以及-epoll原理" class="headerlink" title="posix api 以及 epoll原理"></a>posix api 以及 epoll原理</h3><h2 id="posix-api"><a href="#posix-api" class="headerlink" title="posix api"></a>posix api</h2><p>服务器          客户端<br>socket()        socket()<br>bind()          bind()//optional<br>listen()        connect()//udp可选<br>accept()        recv()<br>send()          send()<br>recv()</p>
+<p>epoll_create()<br>epoll_wait()<br>epoll_ctl()</p>
+<p>fcntl()</p>
+<p>过程<br>1.建立连接<br>2.传输数据<br>3.断开连接</p>
+<h2 id="socket"><a href="#socket" class="headerlink" title="socket()"></a>socket()</h2><p>1.分配fd（由bitmap进行分配，及从前往后找到第一个没有使用的数字）<br>2.分配tcp控制块 alloc()</p>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind()"></a>bind()</h2><p>tcp控制块中会有个五元组 (源ip，源端口，目的ip，目的端口，协议)<br>bind就是将对应参数绑定<br>客户端没有绑定的话 connect()会随机分配一个端口</p>
+<h2 id="listen"><a href="#listen" class="headerlink" title="listen()"></a>listen()</h2><p>1.将tcp控制块的status设置为listen<br>2.为tcp控制块分配全连接队列（accept）和半连接队列（syn）</p>
+<img src="/2026/05/16/2-2-1/tcp.jpeg" class="">
+<h2 id="accept"><a href="#accept" class="headerlink" title="accept()"></a>accept()</h2><p>1.分配fd<br>2.fd到tcp的映射<br>3.epoll中管理accept应当使用水平触发（防止一次来多条连接）若使用边缘触发则应该如下所示<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">while(1)</span><br><span class="line">&#123;</span><br><span class="line">    fd = accept();</span><br><span class="line">    if(fd == -1)</span><br><span class="line">    &#123;</span><br><span class="line">        break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><p>seq表示此次发送的编号（实际上开始连接的编号是随机的，可以防止被攻击）<br>ack表示我期望再次接受到数据的编号（或者说在这个编号之前的数据我已经全部收到）<br>这些编号的作用：不丢失，不重复，不乱序</p>
+<img src="/2026/05/16/2-2-1/threehands.png" class="">
+<p>三次握手发生的函数<br>connect()对应第一次握手的客户端<br>listen()对应第二次握手的服务端（开启的是半连接syn）<br>accept()对应第三握手的服务端 （开启全连接accept）</p>
+<p>tcp连接什么时候开始？<br>第一次握手时，listen()分配半连接队列时开始</p>
+<p>第三次握手数据包，如何从半连接队列查找匹配节点<br>通过对应的五元组查找</p>
+<p>syn泛洪怎么解决（就是客户端只做第一次握手创建半连接）<br>1.限制syn队列长度<br>2.限制syn+accept队列长度，即未分配fd的tcb数量<br>3.限制accept队列长度（更符合现代需求）</p>
+<h2 id="传输过程"><a href="#传输过程" class="headerlink" title="传输过程"></a>传输过程</h2><p>send只是把数据拷贝到内核<br>怎么发送由内核的tcp协议栈控制</p>
+<p>recv把内核数据拷贝到用户空间<br>怎么接收数据由内核的tcp协议栈控制</p>
+<h2 id="tcp协议"><a href="#tcp协议" class="headerlink" title="tcp协议"></a>tcp协议</h2><p>1.慢启动<br>2.拥塞控制<br>3.滑动窗口<br>4.延迟确认<br>5.超时重传</p>
+<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2>
+<p>1.ack没有收到，先收到fin<br>2.双方都调用close<br>可以参考tcp状态转移图推导</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/15/2-1-4/" rel="prev" title="2-1-4">
+      <i class="fa fa-chevron-left"></i> 2-1-4
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/16/2-2-2/" rel="next" title="2-2-2">
+      2-2-2 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -243,6 +304,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-api-%E4%BB%A5%E5%8F%8A-epoll%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">posix api 以及 epoll原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#posix-api"><span class="nav-number">2.</span> <span class="nav-text">posix api</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#socket"><span class="nav-number">3.</span> <span class="nav-text">socket()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind"><span class="nav-number">4.</span> <span class="nav-text">bind()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#listen"><span class="nav-number">5.</span> <span class="nav-text">listen()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accept"><span class="nav-number">6.</span> <span class="nav-text">accept()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">7.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B"><span class="nav-number">8.</span> <span class="nav-text">传输过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8D%8F%E8%AE%AE"><span class="nav-number">9.</span> <span class="nav-text">tcp协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">10.</span> <span class="nav-text">四次挥手</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

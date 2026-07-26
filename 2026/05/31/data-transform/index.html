@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://example.com/tags/index.html">
+  <meta name="description" content="CRC16,CRC32,MD5,SHA1,SHA256,这些是常见的数据校验和哈希算法，用于验证数据的完整性一致性以及身份验证等 CRC16&#x2F;32原理：循环冗余校验，利用多项式计算校验值特点：非加密哈希，设计用以检测数据传输或存储中意外错误CRC16—输出16位（2字节），CRC—输出32位（4字节）计算速度快，无法防止恶意篡改用途：网络数据校验存储介质串口通信 MD5原理：消息摘要算法，输出12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="data_transform">
+<meta property="og:url" content="http://example.com/2026/05/31/data-transform/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="CRC16,CRC32,MD5,SHA1,SHA256,这些是常见的数据校验和哈希算法，用于验证数据的完整性一致性以及身份验证等 CRC16&#x2F;32原理：循环冗余校验，利用多项式计算校验值特点：非加密哈希，设计用以检测数据传输或存储中意外错误CRC16—输出16位（2字节），CRC—输出32位（4字节）计算速度快，无法防止恶意篡改用途：网络数据校验存储介质串口通信 MD5原理：消息摘要算法，输出12">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-13T13:02:24.000Z">
-<meta property="article:modified_time" content="2026-05-13T13:02:24.583Z">
+<meta property="article:published_time" content="2026-05-30T17:35:37.000Z">
+<meta property="article:modified_time" content="2026-05-30T19:01:57.879Z">
 <meta property="article:author" content="GrowlingcAt">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/tags/">
+<link rel="canonical" href="http://example.com/2026/05/31/data-transform/">
 
 
 <script id="page-configurations">
@@ -40,13 +40,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>tags | GrowlingcAt's Blog
-</title>
+  <title>data_transform | GrowlingcAt's Blog</title>
   
 
 
@@ -156,43 +155,85 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/31/data-transform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="GrowlingcAt">
+      <meta itemprop="description" content="这个是记录我学习过程的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GrowlingcAt's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          data_transform
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">tags
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2026-05-31 01:35:37 / 修改时间：03:01:57" itemprop="dateCreated datePublished" datetime="2026-05-31T01:35:37+08:00">2026-05-31</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CRC16,CRC32,MD5,SHA1,SHA256,这些是常见的数据校验和哈希算法，用于验证数据的完整性一致性以及身份验证等</p>
+<h2 id="CRC16-32"><a href="#CRC16-32" class="headerlink" title="CRC16/32"></a>CRC16/32</h2><p>原理：循环冗余校验，利用多项式计算校验值<br>特点：非加密哈希，设计用以检测数据传输或存储中意外错误<br>CRC16—输出16位（2字节），CRC—输出32位（4字节）<br>计算速度快，无法防止恶意篡改<br>用途：<br>网络数据校验<br>存储介质<br>串口通信</p>
+<h2 id="MD5"><a href="#MD5" class="headerlink" title="MD5"></a>MD5</h2><p>原理：消息摘要算法，输出128（16字节）哈希值<br>特点：<br>加密哈希值（但已经被攻破），曾经用于数据完整性，密码存储等<br>抗碰撞性已不满足安全要求，可在较短时间内找到碰撞<br>用途：<br>文件完整性校验<br>软件发布验证<br>旧系统或非安全场景的签名</p>
+<h2 id="SHA1"><a href="#SHA1" class="headerlink" title="SHA1"></a>SHA1</h2><p>原理：安全哈希算法 输出160位（20字节）<br>特点：<br>比MD5安全强度高，但在2005年被证明有碰撞可能，在2017年有碰撞案例<br>目前不推荐使用于安全证书或数字签名<br>作用：<br>git提交哈希<br>某些旧版ssl/tls证书签名<br>备份校验等不要求防攻击的场景</p>
+<h2 id="SHA256"><a href="#SHA256" class="headerlink" title="SHA256"></a>SHA256</h2><p>原理：SHA-2家族成员，输出256位（32）哈希值<br>特点：<br>广泛认为是安全的，抗碰撞性较强。<br>计算速度比MD5和SHA1慢，但安全性较高<br>用途：<br>TLS证书，数字签名。<br>文件完整性验证。<br>密码哈希。<br>区块链</p>
+<p>使用场景分类：<br>错误检测 CRC16/32<br>数据完整性校验 MD5/SHA1 SHA256<br>密码学用途 MD5/SHA1 SHA256<br>安全性敏感 SHA256 SHA1</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/23/the-qt-project/" rel="prev" title="the_qt_project">
+      <i class="fa fa-chevron-left"></i> the_qt_project
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -243,6 +284,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CRC16-32"><span class="nav-number">1.</span> <span class="nav-text">CRC16&#x2F;32</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MD5"><span class="nav-number">2.</span> <span class="nav-text">MD5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SHA1"><span class="nav-number">3.</span> <span class="nav-text">SHA1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SHA256"><span class="nav-number">4.</span> <span class="nav-text">SHA256</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

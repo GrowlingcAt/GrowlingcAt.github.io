@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="这个是记录我学习过程的博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://example.com/tags/index.html">
+  <meta name="description" content="what什么是协程1️⃣ 核心结构体① 协程对象 stCoRoutine_t···c&#x2F;c++struct stCoRoutine_t {    void stack_mem;        &#x2F;&#x2F; 栈指针    size_t stack_size;      &#x2F;&#x2F; 栈大小    void stack_sp;         &#x2F;&#x2F; 当前栈指针（切出时保存）    int cStart;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="coroutine_conclusion">
+<meta property="og:url" content="http://example.com/2026/05/19/coroutine-conclusion/index.html">
 <meta property="og:site_name" content="GrowlingcAt&#39;s Blog">
-<meta property="og:description" content="这个是记录我学习过程的博客">
+<meta property="og:description" content="what什么是协程1️⃣ 核心结构体① 协程对象 stCoRoutine_t···c&#x2F;c++struct stCoRoutine_t {    void stack_mem;        &#x2F;&#x2F; 栈指针    size_t stack_size;      &#x2F;&#x2F; 栈大小    void stack_sp;         &#x2F;&#x2F; 当前栈指针（切出时保存）    int cStart;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-13T13:02:24.000Z">
-<meta property="article:modified_time" content="2026-05-13T13:02:24.583Z">
+<meta property="article:published_time" content="2026-05-19T13:47:35.000Z">
+<meta property="article:modified_time" content="2026-05-22T18:31:54.401Z">
 <meta property="article:author" content="GrowlingcAt">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/tags/">
+<link rel="canonical" href="http://example.com/2026/05/19/coroutine-conclusion/">
 
 
 <script id="page-configurations">
@@ -40,13 +40,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>tags | GrowlingcAt's Blog
-</title>
+  <title>coroutine_conclusion | GrowlingcAt's Blog</title>
   
 
 
@@ -156,43 +155,125 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/19/coroutine-conclusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="GrowlingcAt">
+      <meta itemprop="description" content="这个是记录我学习过程的博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GrowlingcAt's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          coroutine_conclusion
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">tags
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-<div class="post-meta">
+              <time title="创建时间：2026-05-19 21:47:35" itemprop="dateCreated datePublished" datetime="2026-05-19T21:47:35+08:00">2026-05-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-05-23 02:31:54" itemprop="dateModified" datetime="2026-05-23T02:31:54+08:00">2026-05-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="what"><a href="#what" class="headerlink" title="what"></a>what</h3><h3 id="什么是协程"><a href="#什么是协程" class="headerlink" title="什么是协程"></a>什么是协程</h3><p>1️⃣ 核心结构体<br>① 协程对象 stCoRoutine_t<br>···c/c++<br>struct stCoRoutine_t {<br>    void <em>stack_mem;        // 栈指针<br>    size_t stack_size;      // 栈大小<br>    void </em>stack_sp;         // 当前栈指针（切出时保存）<br>    int cStart;             // 是否已启动<br>    int cEnd;               // 是否已结束<br>    void <em>arg;              // 协程参数<br>    pfn_co_routine_t pfn;   // 协程入口函数<br>    stCoRoutine_t </em>pCallFrom; // 调用者协程<br>};<br>···</p>
+<p>重点理解：</p>
+<p>保存协程上下文、栈信息和状态<br>切换协程就是保存/恢复这个结构体里的内容</p>
+<p>② 协程调度器环境 stCoRoutineEnv_t<br>···<br>struct stCoRoutineEnv_t {<br>    stCoRoutine_t <em>pCallStack[MAX_COROUTINE_DEPTH]; // 当前协程栈链<br>    stCoRoutine_t </em>pending_co; // 待运行协程<br>    // 事件驱动相关 epoll, timer 等<br>};<br>···<br>重点理解：</p>
+<p>每个线程一个调度器<br>维护协程状态、调度队列、事件循环<br>③ IO/事件结构 stCoEpoll_t<br>保存 epoll fd<br>保存协程对应的 IO 事件<br>核心功能：挂起协程等待 IO → IO 就绪恢复协程</p>
+<h2 id="int-co-create-stCoRoutine-t-ppco-pfn-co-routine-t-pfn-void-arg"><a href="#int-co-create-stCoRoutine-t-ppco-pfn-co-routine-t-pfn-void-arg" class="headerlink" title="int co_create(stCoRoutine_t *ppco, pfn_co_routine_t pfn, void arg);"></a>int co_create(stCoRoutine_t <em>*ppco, pfn_co_routine_t pfn, void </em>arg);</h2><p>ppco：返回创建好的协程对象指针<br>pfn：协程执行函数<br>arg：传入协程的参数</p>
+<p>2️⃣ 核心实现流程<br>步骤 1：获取当前线程调度器环境</p>
+<p>stCoRoutineEnv_t *env = co_get_curr_thread_env();</p>
+<p>步骤 2：分配协程对象<br>stCoRoutine_t <em>co = (stCoRoutine_t</em>)malloc(sizeof(stCoRoutine_t));<br>memset(co, 0, sizeof(stCoRoutine_t));<br>初始化为 0<br>还没有分配栈</p>
+<p>步骤 3：分配协程栈</p>
+<p>ntyco 支持 独立栈 / 共享栈：</p>
+<p>co-&gt;stack_mem = malloc(STACK_SIZE);      // 独立栈<br>co-&gt;stack_size = STACK_SIZE;<br>co-&gt;stack_sp = co-&gt;stack_mem + STACK_SIZE; // 栈顶<br>对于共享栈，需要从 stShareStack_t 获取一块栈内存<br>栈大小可以默认，也可以在 API 中指定</p>
+<p>步骤 4：初始化协程上下文</p>
+<p>使用 ucontext API 或汇编：</p>
+<p>getcontext(&amp;co-&gt;ctx);                    // 初始化上下文<br>co-&gt;ctx.uc_stack.ss_sp = co-&gt;stack_mem;  // 栈起始位置<br>co-&gt;ctx.uc_stack.ss_size = co-&gt;stack_size;<br>co-&gt;ctx.uc_link = NULL;                  // 协程结束后返回<br>makecontext(&amp;co-&gt;ctx, (void(*)())co_entry_func, 1, co);<br>co_entry_func 是库内部封装函数，用于：<br>调用用户传入的 pfn(co, arg)<br>协程结束后标记状态为 DEAD<br>自动切回调用者协程</p>
+<p>步骤 5：设置协程状态和函数参数<br>co-&gt;pfn = pfn;     // 用户协程入口<br>co-&gt;arg = arg;     // 用户参数<br>co-&gt;cStart = 0;    // 未启动<br>co-&gt;cEnd = 0;      // 未结束<br>状态在第一次 co_resume 时变为 RUNNING<br>pCallFrom 指向调用协程，方便 co_yield 切回</p>
+<p>步骤 6：返回协程对象<br>*ppco = co;       // 返回给调用者<br>return 0;         // 成功<br>协程现在已创建，但 尚未运行<br>需要通过 co_resume(co) 才会进入调度器执行</p>
+<h2 id="void-co-resume-stCoRoutine-t-co"><a href="#void-co-resume-stCoRoutine-t-co" class="headerlink" title="void co_resume(stCoRoutine_t *co);"></a>void co_resume(stCoRoutine_t *co);</h2><p>核心源码逻辑（精简版）</p>
+<p>ntyco 里的逻辑大概是：</p>
+<p>void co_resume(stCoRoutine_t <em>co)<br>{<br>    stCoRoutineEnv_t </em>env = co-&gt;env;</p>
+<pre><code>stCoRoutine_t *curr = env-&gt;pCallStack[env-&gt;iCallStackSize - 1];
+
+// 记录调用者
+co-&gt;pCallFrom = curr;
+
+// 放入调用栈
+env-&gt;pCallStack[env-&gt;iCallStackSize++] = co;
+
+// 上下文切换
+co_swap(curr, co);
+</code></pre><p>}</p>
+<p>这个函数真正的核心其实是：</p>
+<p>co_swap(curr, co);</p>
+<p>4️⃣ co_resume 第一步：获取当前协程<br>stCoRoutine_t *curr =<br>    env-&gt;pCallStack[env-&gt;iCallStackSize - 1];</p>
+<p>5️⃣ 第二步：记录调用者<br>co-&gt;pCallFrom = curr;</p>
+<p>6️⃣ 第三步：压入调用栈<br>env-&gt;pCallStack[env-&gt;iCallStackSize++] = co;</p>
+<p>7️⃣ 第四步：真正上下文切换<br>co_swap(curr, co);</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/05/19/reactor-conclusion/" rel="prev" title="reactor_conclusion">
+      <i class="fa fa-chevron-left"></i> reactor_conclusion
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2026/05/23/the-qt-project/" rel="next" title="the_qt_project">
+      the_qt_project <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -243,6 +324,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#what"><span class="nav-number">1.</span> <span class="nav-text">what</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">什么是协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#int-co-create-stCoRoutine-t-ppco-pfn-co-routine-t-pfn-void-arg"><span class="nav-number">3.</span> <span class="nav-text">int co_create(stCoRoutine_t *ppco, pfn_co_routine_t pfn, void arg);</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#void-co-resume-stCoRoutine-t-co"><span class="nav-number">4.</span> <span class="nav-text">void co_resume(stCoRoutine_t *co);</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
